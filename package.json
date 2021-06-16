@@ -2,7 +2,7 @@
   "name": "chat-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "build/main.js",
+  "main": "build/index.js",
   "scripts": {
     "start": "node .",
     "build": "tsc",
