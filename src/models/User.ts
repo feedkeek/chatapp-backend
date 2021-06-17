@@ -1,4 +1,4 @@
-import { Document, Schema, model } from "mongoose";
+import { Document, Schema, model, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 import jwt from "jsonwebtoken";
@@ -86,6 +86,9 @@ export interface IUser extends Document {
     tokens: Array<{ token: string }>,
     status: Status,
     generateAuthToken(): string,
+}
+
+export interface IUserModel extends Model<IUser> {
     findByCredentials(email: string, password: string): IUser,
 }
 
@@ -97,6 +100,6 @@ export enum Status {
     DontDisturb
 }
 
-const UserModel = model<IUser>('User', userSchema);
+const UserModel = model<IUser, IUserModel>('User', userSchema);
 
 export default UserModel;
