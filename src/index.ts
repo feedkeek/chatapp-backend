@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(userRouter);
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.send("<h1>Hello from server</h1>");
+    res.send("<h1>Hello from api server</h1>");
 });
 const server = http.createServer(app);
 const io: socket.Server = new Server(server, {
