@@ -5,7 +5,7 @@ const auth = async (req: any, res: any, next: any) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '');
         const data: any = jwt.verify(token, process.env.JWT_KEY);
-        const user: IUser = await UserModel.findOne({ _id: data._id, 'tokens.token': token });
+        const user: IUser = await UserModel.findOne({ _id: data._id, 'tokens.token': token }).populate("friends").populate("notifications");
         if (!user) {
             throw new Error("No such user");
         }

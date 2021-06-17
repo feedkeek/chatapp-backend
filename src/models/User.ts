@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import validator from "validator";
 import jwt from "jsonwebtoken";
 
+import NotificationSchema, {INotification} from "./Notification";
+
 const userSchema: Schema = new Schema({
     username: {
         type: String,
@@ -45,6 +47,7 @@ const userSchema: Schema = new Schema({
         type: Number,
         enum: [0, 1, 2, 3, 4]
     },
+    notifications: [NotificationSchema]
 });
 
 userSchema.pre("save", async function (this: IUser, next) {
@@ -85,6 +88,7 @@ export interface IUser extends Document {
     friends: IUser[],
     tokens: Array<{ token: string }>,
     status: Status,
+    notifications: INotification[],
     generateAuthToken(): string,
 }
 
