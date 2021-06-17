@@ -9,7 +9,6 @@
     "postinstall": "tsc",
     "dev:start": "npm-run-all build start",
     "dev": "nodemon --watch src -e ts,ejs --exec npm run dev:start",
-    "test": "mocha tests/socketTesting.js",
     "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "repository": {
