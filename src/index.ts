@@ -7,7 +7,6 @@ import socket, { Server } from "socket.io";
 import http from "http";
 
 import userRouter from "./routers/user";
-
 const PORT = process.env.PORT || 3000;
 const app: express.Application = express();
 
@@ -16,20 +15,33 @@ app.use(express.json());
 app.use(userRouter);
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.send("<h1>Hello from api kek server</h1>");
+    res.send("<h1>Hello from api server</h1>");
 });
+
 const server = http.createServer(app);
 const io: socket.Server = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
         credentials: true
     }
 });
 
 io.on('connection', (socket) => {
     console.log('User connected');
+    console.log("Connected");
+        socket.on("message", async function(data) {
+            // await ChatModel.updateOne({ _id: data.chatId }, {
+            //     $push: {
+            //         messages: <IMessage>{
+            //             text: data.text,
+            //             from: data.userId,
+            //             time: data.timestamp,
+            //         }
+            //     }
+            // });
+            socket.emit("event", data);
+        })
 })
 
 server.listen(PORT, () => {

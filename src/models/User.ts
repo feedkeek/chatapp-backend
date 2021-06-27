@@ -4,6 +4,7 @@ import validator from "validator";
 import jwt from "jsonwebtoken";
 
 import NotificationSchema, {INotification} from "./Notification";
+import ChatModel, { IChat } from "./Chat";
 
 const userSchema: Schema = new Schema({
     username: {
@@ -78,6 +79,16 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user;
 }
 
+userSchema.virtual("chats").get(async function(this: IUser){
+    const chats: IChat[] = await ChatModel.find({participants: this}).populate("participants");
+    chats.sort(function(a: IChat, b: IChat) {
+        const val1 = a.messages.length > 0 ? a.messages[a.messages.length].time : a.createdAt;
+        const val2 = b.messages.length > 0 ? b.messages[b.messages.length].time : b.createdAt;
+        return val2 - val1;
+    });
+    return chats;
+});
+
 export interface IUser extends Document {
     username: string,
     email: string,
@@ -90,6 +101,7 @@ export interface IUser extends Document {
     status: Status,
     notifications: INotification[],
     generateAuthToken(): string,
+    chats: IChat[],
 }
 
 export interface IUserModel extends Model<IUser> {
