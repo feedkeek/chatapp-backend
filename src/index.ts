@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
         console.log(`${socket.id} joined chat chat_${chatId}`);
         socket.on(`sendMessage_${chatId}`, (data) => {
             console.log("Message sended");
-            io.to(`chat_${chatId}`).emit('receiveMessage', data);
+            io.to(`chat_${chatId}`).emit(`receiveMessage_${chatId}`, data);
         });
         
     })
