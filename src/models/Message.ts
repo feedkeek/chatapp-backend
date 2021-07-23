@@ -12,7 +12,7 @@ const messageSchema: Schema = new Schema({
         type: Number,
         default: new Date().getTime()
     }
-}, {_id: false} );
+},);
 
 export interface IMessage{
     text: string,

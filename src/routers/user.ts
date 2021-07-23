@@ -26,7 +26,19 @@ router.post("/users/login", async (req: express.Request, res: express.Response) 
         const token = await user.generateAuthToken();
         res.status(200).send({ user, token });
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send({ error: "Invalid credentials" });
+    }
+})
+
+router.post('/users/me/logout', auth, async(req:any, res:any) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token:any) => {
+            return token.token != req.token;
+        });
+        await req.user.save();
+        res.status(200).send();
+    } catch (error) {
+        res.status(500).send(error);       
     }
 })
 

@@ -11,7 +11,7 @@ const router: express.Router = express.Router();
 router.get("/chats", auth, async (req: any, res: any) => {
     try {
         const user: IUser = req.user;
-        res.status(200).send(user.chats);
+        res.status(200).send(await user.chats);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -59,6 +59,16 @@ router.post("/chats/:id/", auth, async (req: any, res: any) => {
         await chat.save();
         // io.to(`room_${req.params.id}`).emit("messageSend");
         res.status(200).send("Sended");
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+})
+
+router.delete("/chats/:id/", auth, async (req: any, res: any) => {
+    try {
+        await ChatModel.findByIdAndDelete(req.params.id);
+        res.status(200).send("Deleted");
     } catch (error) {
         res.status(400).send(error);
     }

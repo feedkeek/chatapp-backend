@@ -36,15 +36,26 @@ io.on('connection', (socket) => {
 io.on('connection', (socket) => {
     console.log('User connected');
 
-    socket.on("join-chat", (chatId) => {
-        console.log(`JOIN CHAT socket:${socket.id} room:${chatId}`);
-        socket.join(chatId);
-        console.log('SOCKET ROOMS', io.sockets.adapter.rooms);
+    // socket.on("join-chat", (chatId) => {
+    //     console.log(`JOIN CHAT socket:${socket.id} room:${chatId}`);
+    //     socket.join(chatId);
+    //     console.log('SOCKET ROOMS', io.sockets.adapter.rooms);
+    // })
+
+    // io.of("/").adapter.on("join-room", (room, id) => {
+    //     console.log(`${id} joined ${room}`);
+    // });
+
+    socket.on("joinroom", (chatId) => {
+        socket.join(`chat_${chatId}`);
+        console.log(`${socket.id} joined chat chat_${chatId}`);
+        socket.on(`sendMessage_${chatId}`, (data) => {
+            console.log("Message sended");
+            io.to(`chat_${chatId}`).emit('receiveMessage', data);
+        });
+        
     })
 
-    io.of("/").adapter.on("join-room", (room, id) => {
-        console.log(`${id} joined ${room}`);
-    });
 })
 
 
