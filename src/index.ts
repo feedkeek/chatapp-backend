@@ -29,9 +29,9 @@ const io: socket.Server = new Server(server, {
     }
 });
 // const file1 = chatSocket(io);
-io.on('connection', (socket) => {
-    console.log('User connected');
-})
+// io.on('connection', (socket) => {
+//     console.log('User connected');
+// })
 
 io.on('connection', (socket) => {
     console.log('User connected');
@@ -51,7 +51,8 @@ io.on('connection', (socket) => {
         console.log(`${socket.id} joined chat chat_${chatId}`);
         socket.on(`sendMessage_${chatId}`, (data) => {
             console.log("Message sended");
-            io.to(`chat_${chatId}`).emit(`receiveMessage_${chatId}`, data);
+            console.log(data);
+            socket.broadcast.to(`chat_${chatId}`).emit(`receiveMessage_${chatId}`, data);
         });
         
     })

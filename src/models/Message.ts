@@ -4,10 +4,7 @@ import {IUser} from "./User";
 
 const messageSchema: Schema = new Schema({
     text: String,
-    from: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
+    from: String,
     time: {
         type: Number,
         default: new Date().getTime()
@@ -16,7 +13,7 @@ const messageSchema: Schema = new Schema({
 
 export interface IMessage{
     text: string,
-    from: IUser,
+    from: string,
     time: number,
 }
 

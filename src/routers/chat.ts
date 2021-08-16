@@ -24,8 +24,9 @@ router.post("/chats", auth, async (req: any, res: any) => {
         const chat: IChat = new ChatModel();
         chat.populate("participants");
         if (type == ChatType.Dual) {
-            const friend: IUser = await UserModel.findById(req.body["userId"]);
-            chat.participants.push(user, friend);
+            const friend: IUser = await UserModel.findOne({email: req.body['email']});
+            chat.participants.push(user);
+            chat.participants.push(friend);
         }
         else if (type == ChatType.Group) {
             const ids: string[] = req.body['userIds'];
@@ -38,7 +39,7 @@ router.post("/chats", auth, async (req: any, res: any) => {
         }
         await chat.save();
     
-        res.status(200).send("Created");
+        res.status(200).send(chat);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -49,7 +50,7 @@ router.post("/chats/:id/", auth, async (req: any, res: any) => {
         const chat: IChat = await ChatModel.findById(req.params.id);
         const text: string = req.body['text'];
         const message = {
-            from: req.user, 
+            from: req.user.email, 
             text: text, 
             time: new Date().getTime()
         };

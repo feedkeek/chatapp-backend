@@ -70,11 +70,14 @@ userSchema.methods.generateAuthToken = async function (this: IUser) {
 userSchema.statics.findByCredentials = async (email, password) => {
     const user: IUser = await UserModel.findOne({ email });
     if (!user) {
-        throw new Error("Invalid login credentials");
+        // throw new Error("Invalid login credentials");
+        return null;
     }
+
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-        throw new Error("Invalid login credentials");
+        // throw new Error("Invalid login credentials");
+        return null;
     }
     return user;
 }
