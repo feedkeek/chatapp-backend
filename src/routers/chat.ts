@@ -9,12 +9,9 @@ import { IMessage } from "../models/Message";
 const router: express.Router = express.Router();
 
 router.get("/chats", auth, async (req: any, res: any) => {
-    try {
         const user: IUser = req.user;
         res.status(200).send(await user.chats);
-    } catch (error) {
-        res.status(400).send(error);
-    }
+    
 })
 
 router.post("/chats", auth, async (req: any, res: any) => {
