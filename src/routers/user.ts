@@ -1,5 +1,6 @@
 import express from "express";
 import UserModel, { IUser, Status } from "../models/User";
+import { ObjectId } from "mongoose";
 import NotificationSchema, { INotification } from "../models/Notification";
 import auth from "../middleware/auth";
 import validator from "validator";
@@ -17,16 +18,16 @@ router.post("/users", async (req: express.Request, res: express.Response) => {
     }
 });
 
-router.post('/users/search', async (req: express.Request, res: express.Response) => {
+router.post('/users/search', auth, async (req: any, res: express.Response) => {
     
     try {
         const searchValue: string = req.body['searchValue'];
-        let regex = new RegExp(searchValue);
+        let regex = new RegExp(searchValue, "i");
         if(validator.isEmail(searchValue)) {
-            return res.status(200).send(await UserModel.find({email: {$regex: regex}}, "username email"));
+            return res.status(200).send(await UserModel.find({email: {$regex: regex}, _id: {$nin: req.user.id}}, "username email"));
         }
         else {
-            return res.status(200).send(await UserModel.find({username: {$regex: regex}}, "username email"));
+            return res.status(200).send(await UserModel.find({username: {$regex: regex}, _id: {$nin: req.user.id}}, "username email"));
         }
     } catch (error) {
         res.status(400).send(error);

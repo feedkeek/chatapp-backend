@@ -28,53 +28,44 @@ const io: socket.Server = new Server(server, {
         credentials: true
     }
 });
-// const file1 = chatSocket(io);
-// io.on('connection', (socket) => {
-//     console.log('User connected');
-// })
+
+interface socketUser{
+    "socketId": string,
+    "email": string,
+}
+
+const usersOnline: any = {};
 
 io.on('connection', (socket) => {
     console.log('User connected');
 
-    // socket.on("join-chat", (chatId) => {
-    //     console.log(`JOIN CHAT socket:${socket.id} room:${chatId}`);
-    //     socket.join(chatId);
-    //     console.log('SOCKET ROOMS', io.sockets.adapter.rooms);
-    // })
-
-    // io.of("/").adapter.on("join-room", (room, id) => {
-    //     console.log(`${id} joined ${room}`);
-    // });
-
+    socket.on("userJoined", (email) => {
+        console.log("kek");
+        usersOnline[email] = socket.id;
+        console.log(usersOnline);
+    });
     socket.on("joinroom", (chatId) => {
         socket.join(`chat_${chatId}`);
         console.log(`${socket.id} joined chat chat_${chatId}`);
         socket.on(`sendMessage_${chatId}`, (data) => {
-            console.log("Message sended");
-            console.log(data);
             socket.broadcast.to(`chat_${chatId}`).emit(`receiveMessage_${chatId}`, data);
         });
-        
+        socket.on(`startWriting_${chatId}`, (data) => {
+            socket.broadcast.to(`chat_${chatId}`).emit(`writing_${chatId}`, true);
+        })
+        socket.on(`endWriting_${chatId}`, (data) => {
+            socket.broadcast.to(`chat_${chatId}`).emit(`stopWriting_${chatId}`, false);
+        })
     })
-
+    socket.on("chatCreated", (email) => {
+        console.log("chatCreated endpoint socket");
+        io.to(usersOnline[email]).emit("reloadChats");
+    })
+    socket.on('disconnect', () => {
+        console.log("disconnect endpoint socket");
+    })
 })
 
-
-// export default io;
-
-// console.log("Connected");
-// socket.on("message", async function(data) {
-//     // await ChatModel.updateOne({ _id: data.chatId }, {
-//     //     $push: {
-//     //         messages: <IMessage>{
-//     //             text: data.text,
-//     //             from: data.userId,
-//     //             time: data.timestamp,
-//     //         }
-//     //     }
-//     // });
-//     socket.emit("event", {"kek": "BRUUUUH"});
-// })
 
 server.listen(PORT, () => {
     console.log(`Server listens at localhost:${PORT}`);

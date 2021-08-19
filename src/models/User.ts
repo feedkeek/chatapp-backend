@@ -87,9 +87,17 @@ userSchema.virtual("chats").get(async function(this: IUser){
     
     chats.sort(function(a: IChat, b: IChat) {
         if(a.messages.length != 0 && b.messages.length != 0){
+            try{
             const val1 = a.messages.length > 0 ? a.messages[a.messages.length].time : a.createdAt;
             const val2 = b.messages.length > 0 ? b.messages[b.messages.length].time : b.createdAt;
             return val2 - val1;
+            } catch (error) {
+                return a.createdAt - b.createdAt;
+            }
+            
+        }
+        else {
+            return a.createdAt - b.createdAt;
         }
     });
     return chats;
